@@ -28,4 +28,8 @@ public class Port {
     public int getShipmentsPerDay() {
         return shipmentsPerDay;
     }
+
+    public Q2 getQ() {
+        return q;
+    }
 }

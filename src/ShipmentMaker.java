@@ -6,14 +6,36 @@ public class ShipmentMaker implements Event {
     /* creation port */
     private int creationPort;
 
+    /* arrival interval of individual shipment */
+    private int interval;
+
+    /* number of minutes in a day divided by number of shipments per day of individual port */
+    private double mu;
+
     public ShipmentMaker(int creationPort) {
+
         this.creationPort = creationPort;
+
+        /* number of minutes in a day divided by number of shipments per day of individual port */
+        mu = 24 * 60 / VesselSim.ports[creationPort].getShipmentsPerDay();
     }
 
     @Override
     public void run() {
+
         /* create a shipment */
-        Shipment s = new Shipment(weightGenerator(), VesselSim.agenda.getCurrentTime(), creationPort);
+        Shipment shipment = new Shipment(weightGenerator(), VesselSim.agenda.getCurrentTime(), creationPort);
+
+        /* place the Shipment in the appropriate queue at the current stop */
+        VesselSim.ports[creationPort].getQ().add(shipment);
+
+        /* add a new ShipmentMaker Event to our agenda for the same creationPort at a time interval
+        which is a random distribution */
+        interval = intervalGenerator(mu);
+        VesselSim.agenda.add(new ShipmentMaker(creationPort), interval);
+
+        System.out.println("Shipment Event Island: " + creationPort +
+                ", Time is:" + VesselSim.agenda.getCurrentTime() + ", Next Shipment in: " + interval);
     }
 
     private int weightGenerator() {

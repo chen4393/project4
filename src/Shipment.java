@@ -16,7 +16,7 @@ public class Shipment {
         creationPort = c;
         /* generate a random destination port */
         do {
-            destinationPort = 10 * (int) Math.random();
+            destinationPort = (int)(10 * Math.random());
         } while (destinationPort == creationPort);
     }
 
