@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * Created by chen4393 on 4/12/17.
  */
@@ -12,28 +14,73 @@ public class Vessel {
     private int speed;
 
     /* cost per Km */
-    private int cost;
+    private int unitCost;
 
-    public Vessel(String name, int capacity, int speed, int cost) {
+    private int maxWeight;
+
+    /* what capacity a vessel should be filled before departing */
+    private int C;
+
+    
+
+    /* shipments list */
+    private ArrayList<Shipment> list;
+
+    public Vessel(String name, int capacity, int speed, int unitCost) {
         this.name = name;
         this.capacity = capacity;
         this.speed = speed;
-        this.cost = cost;
+        this.unitCost = unitCost;
+        list = new ArrayList<Shipment>();
     }
 
-    public String getName() {
-        return name;
+    public boolean addShipment(Shipment s) {
+        if (!isFull()) {
+            list.add(s);
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public int getCapacity() {
-        return capacity;
+    public Shipment[] removePassengersAtIsland(int targetPort) {
+
+        /* buffer the shipments whose destination is the targetPort into a temporary list */
+        ArrayList<Shipment> tempList = new ArrayList<Shipment>();
+        for (int i = 0; i < list.size(); i++) {
+            Shipment tempShipment = list.get(i);
+            if (tempShipment.getDestinationPort() == targetPort) {
+                tempList.add(tempShipment);
+            }
+        }
+
+        /* remove the shipments whose destination is the targetPort from the list */
+        for (int i = 0; i < tempList.size(); i++) {
+            Shipment tempShipment = tempList.get(i);
+            list.remove(tempShipment);
+        }
+
+        /* dump the shipments whose destination is the targetPort into an array */
+        Shipment[] result = new Shipment[tempList.size()];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = tempList.get(i);
+        }
+
+        return result;
     }
 
-    public int getSpeed() {
-        return speed;
-    }
+    public boolean isFull() { return list.size() >= capacity; }
 
-    public int getCost() {
-        return cost;
-    }
+    public String getName() { return name; }
+
+    public int getCapacity() { return capacity; }
+
+    public int getSpeed() { return speed; }
+
+    public int getunitCost() { return unitCost; }
+
+    public int getSize() { return list.size(); }
+
+    /* calculate how much money was made off of the current shipment */
+
 }
