@@ -3,6 +3,8 @@
  */
 public class VesselEvent implements Event {
 
+    private int currPort;
+
     private Vessel vessel;
 
     public VesselEvent(Vessel vessel) {
@@ -13,6 +15,7 @@ public class VesselEvent implements Event {
 
         /* cause the vessel associated with it to look at its shipments list
          * to calculate how much money was made off of the current shipment */
+        for ()
 
         /* remove the shipments */
 

@@ -3,30 +3,49 @@
  */
 public class VesselSim {
 
-    public static PQ agenda = new PQ();
+	public static PQ agenda = new PQ();
 
-    public static Port[] ports;
+	public static Port[] ports;
 
-    public static void main(String[] args) {
-        ports = new Port[10];
-        ports[0] = new Port("Minneapolis", 0, 0, 50);
-        ports[1] = new Port("Saint Paul", 0, 10, 50);
-        ports[2] = new Port("Antarctica", 0, -6000, 10);
-        ports[3] = new Port("Japan", 4000, 4000, 100);
-        ports[4] = new Port("Korea", 6000, 5000, 50);
-        ports[5] = new Port("China", 5000, 6000, 1000);
-        ports[6] = new Port("Moon", 0, 1000000, 0);
-        ports[7] = new Port("Panama", 1000, 3000, 50);
-        ports[8] = new Port("Hawaii", 2000, 2000, 50);
-        ports[9] = new Port("Pirate Town", 3000, 3000, 100);
+	/* the percentage a ship needs to be full before departing */
+	public static double C;
 
-        agenda.add(new ShipmentMaker(0), 0);
-        agenda.add(new ShipmentMaker(1), 1);
-        agenda.add(new ShipmentMaker(2), 2);
+	/* the amount of time a ship will wait to reach capacity
+	 * before leaving with the current cargo
+	  * unit: day*/
+	public static int W;
 
-        while (agenda.getCurrentTime() <= 100) {
-            agenda.remove().run();
-        }
-    }
+	/* transport vessel type */
+	public static String Type;
+
+	public static void main(String[] args) {
+
+		C = 0.8;
+
+		W = 2;
+
+		Type = "Canoe";
+
+		/* ports configuration */
+		ports = new Port[10];
+		ports[0] = new Port("Minneapolis", 0, 0, 50);
+		ports[1] = new Port("Saint Paul", 0, 10, 50);
+		ports[2] = new Port("Antarctica", 0, -6000, 10);
+		ports[3] = new Port("Japan", 4000, 4000, 100);
+		ports[4] = new Port("Korea", 6000, 5000, 50);
+		ports[5] = new Port("China", 5000, 6000, 1000);
+		ports[6] = new Port("Moon", 0, 1000000, 0);
+		ports[7] = new Port("Panama", 1000, 3000, 50);
+		ports[8] = new Port("Hawaii", 2000, 2000, 50);
+		ports[9] = new Port("Pirate Town", 3000, 3000, 100);
+
+		agenda.add(new ShipmentMaker(0), 0);
+		agenda.add(new ShipmentMaker(1), 1);
+		agenda.add(new ShipmentMaker(2), 2);
+
+		while (agenda.getCurrentTime() <= 100) {
+			agenda.remove().run();
+		}
+	}
 
 }
