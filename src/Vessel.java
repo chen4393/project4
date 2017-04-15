@@ -104,7 +104,7 @@ public class Vessel {
         int result = 0;
         for (int i = 0; i < list.size(); i++) {
             Shipment tempShipment = list.get(i);
-            result += tempShipment.getWeight();
+            result += tempShipment.getWeight() * 10;
         }
         return result;
     }
@@ -116,4 +116,8 @@ public class Vessel {
     public int getSpeed() {
         return speed;
     }
+
+    public int getUnitCost() {
+    	return unitCost;
+	}
 }

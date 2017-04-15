@@ -24,7 +24,7 @@ public class VesselSim {
 
 		W = 2;
 
-		Type = "Canoe";
+		Type = "Carrier Pigeon Team";
 
 		/* ports configuration */
 		ports = new Port[10];
@@ -39,9 +39,11 @@ public class VesselSim {
 		ports[8] = new Port("Hawaii", 2000, 2000, 50);
 		ports[9] = new Port("Pirate Town", 3000, 3000, 100);
 
-		agenda.add(new ShipmentMaker(0), 0);
-		agenda.add(new ShipmentMaker(1), 1);
-		agenda.add(new ShipmentMaker(2), 2);
+		for (int i = 0; i < ports.length; i++) {
+			if (i != 6) {
+				agenda.add(new ShipmentMaker(i), i);
+			}
+		}
 
 		int numVessel = 0;
         if (Type.equals("Canoe")) {
@@ -71,6 +73,8 @@ public class VesselSim {
 		while (agenda.getCurrentTime() <= 100000) {
 			agenda.remove().run();
 		}
+
+		Stat.printTotalProfit();
 	}
 
 }

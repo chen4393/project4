@@ -7,7 +7,7 @@ public class ShipmentMaker implements Event {
 	private int creationPort;
 
 	/* arrival interval of individual shipment */
-	private int interval;
+	private double interval;
 
 	public ShipmentMaker(int creationPort) {
 		this.creationPort = creationPort;
@@ -16,12 +16,6 @@ public class ShipmentMaker implements Event {
 	@Override
 	public void run() {
 
-		/* create a shipment */
-		Shipment shipment = new Shipment(weightGenerator(), VesselSim.agenda.getCurrentTime(), creationPort);
-
-		/* place the Shipment in the appropriate queue at the current stop */
-		VesselSim.ports[creationPort].getQ().add(shipment);
-
 		/* mean interval = number of minutes in a day
 		 * divided by number of shipments per day of individual port */
 		double mu = 24 * 60 / VesselSim.ports[creationPort].getShipmentsPerDay();
@@ -29,9 +23,16 @@ public class ShipmentMaker implements Event {
 		/* add a new ShipmentMaker Event to our agenda for the same creationPort at a time interval
 		 * which is a random distribution */
 		interval = intervalGenerator(mu);
+
+		/* create a shipment */
+		Shipment shipment = new Shipment(weightGenerator(), VesselSim.agenda.getCurrentTime() + interval, creationPort);
+
+		/* place the Shipment in the appropriate queue at the current stop */
+		VesselSim.ports[creationPort].getQ().add(shipment);
+
 		VesselSim.agenda.add(new ShipmentMaker(creationPort), interval);
 
-		System.out.println("Shipment Event Island: " + creationPort +
+		System.out.println("Shipment Event Port: " + creationPort +
 				", Time is:" + VesselSim.agenda.getCurrentTime() + ", Next Shipment in: " + interval);
 
 	}
@@ -40,7 +41,7 @@ public class ShipmentMaker implements Event {
 		return intRandomInterval(1, 1000);
 	}
 
-	private int intervalGenerator(double mean) {
+	private double intervalGenerator(double mean) {
 		int randNum = (int)(100 * Math.random());
 		double res = 0;
 		if (randNum >= 0 && randNum <= 9) {
@@ -58,7 +59,7 @@ public class ShipmentMaker implements Event {
 		} else if (randNum >= 90 && randNum <= 99) {
 			res = 7 * mean / 4; // 10%
 		}
-		return (int)res;
+		return res;
 	}
 
 	public static int intRandomInterval(int low, int high) {

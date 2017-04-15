@@ -25,14 +25,15 @@ public class VesselEvent implements Event {
 		vessel.removeShipments();
 
 		/* look at where the oldest shipment is going to */
-		Shipment oldestShipment = null;
+		Shipment oldestShipment = (Shipment)VesselSim.ports[currPort].getQ().remove();
+		VesselSim.ports[currPort].getQ().add(oldestShipment);
 
         int qSize = VesselSim.ports[currPort].getQ().length();
 
-        int earliestTime = Integer.MAX_VALUE;
+        double earliestTime = Double.MAX_VALUE;
 		for (int i = 0; i < qSize; i++) {
 			Shipment tempShipment = (Shipment)VesselSim.ports[currPort].getQ().remove();
-			//if (tempShipment == null)   continue;
+			if (tempShipment == null)   continue;
 			if (tempShipment.getCreationTime() < earliestTime && tempShipment.getDestinationPort() != currPort) {
 				earliestTime = (int)tempShipment.getCreationTime();
 				oldestShipment = tempShipment;
@@ -40,7 +41,7 @@ public class VesselEvent implements Event {
 			VesselSim.ports[currPort].getQ().add(tempShipment);
 		}
 
-		int dest;
+		int dest = 1;
 
         do {
             int trialNum = (int)(1000 * Math.random());
@@ -60,7 +61,7 @@ public class VesselEvent implements Event {
 		}
 
         System.out.println("currPort: " + currPort + " dest: " + dest);
-        int interval = getProcessingTime(currPort, dest);
+        double interval = getProcessingTime(currPort, dest);
 
         qSize = VesselSim.ports[currPort].getQ().length();
 		for (int i = 0; i < qSize; i++) {
@@ -89,14 +90,22 @@ public class VesselEvent implements Event {
 
 		System.out.println("Vessel Event Port: " + dest +
 				", Time is: " + VesselSim.agenda.getCurrentTime() + ", Next Ferry in: " + interval);
+
+		double totalCost = getDistance(currPort, dest) * vessel.getUnitCost();
+		Stat.totalProfit += totalMoney - totalCost;
 	}
 
-	private int getProcessingTime(int src, int dest) {
-	    int dx = (VesselSim.ports[dest].getLocation()[0] - VesselSim.ports[src].getLocation()[0]);
-	    int dy = (VesselSim.ports[dest].getLocation()[1] - VesselSim.ports[src].getLocation()[1]);
-        int d2 = dx * dx + dy * dy;
-		double d = Math.sqrt(d2);
-        int t = (int)(d / vessel.getSpeed() * 60 + 0.5);
+	private double getProcessingTime(int src, int dest) {
+		double d = getDistance(src, dest);
+        double t = d / vessel.getSpeed() * 60;
 		return t;
+	}
+
+	private double getDistance(int src, int dest) {
+		int dx = (VesselSim.ports[dest].getLocation()[0] - VesselSim.ports[src].getLocation()[0]);
+		int dy = (VesselSim.ports[dest].getLocation()[1] - VesselSim.ports[src].getLocation()[1]);
+		int d2 = dx * dx + dy * dy;
+		double d = Math.sqrt(d2);
+		return d;
 	}
 }
