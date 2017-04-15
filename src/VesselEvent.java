@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * Created by chen4393 on 4/12/17.
  */
@@ -30,7 +32,7 @@ public class VesselEvent implements Event {
         int earliestTime = Integer.MAX_VALUE;
 		for (int i = 0; i < qSize; i++) {
 			Shipment tempShipment = (Shipment)VesselSim.ports[currPort].getQ().remove();
-			if (tempShipment == null)   continue;
+			//if (tempShipment == null)   continue;
 			if (tempShipment.getCreationTime() < earliestTime && tempShipment.getDestinationPort() != currPort) {
 				earliestTime = (int)tempShipment.getCreationTime();
 				oldestShipment = tempShipment;
@@ -38,7 +40,21 @@ public class VesselEvent implements Event {
 			VesselSim.ports[currPort].getQ().add(tempShipment);
 		}
 
-		int dest = 0;
+		int dest;
+
+        do {
+            int trialNum = (int)(1000 * Math.random());
+            if (trialNum == 0) {
+                dest = 6;    // 0.1% chance to get to Moon
+            } else {
+                int trialNum2 = (int)(9 * Math.random());
+                if (trialNum2 >= 6) {
+                    trialNum2++; // skip Moon
+                }
+                dest = trialNum2;
+            }
+        } while (dest == currPort);
+
 		if (oldestShipment != null && oldestShipment.getDestinationPort() != currPort) {
 			dest = oldestShipment.getDestinationPort();
 		}
@@ -46,11 +62,10 @@ public class VesselEvent implements Event {
         System.out.println("currPort: " + currPort + " dest: " + dest);
         int interval = getProcessingTime(currPort, dest);
 
-		/* start loading the vessel with Shipments going to that Port */
-/*
+        qSize = VesselSim.ports[currPort].getQ().length();
 		for (int i = 0; i < qSize; i++) {
 			Shipment tempShipment = (Shipment)VesselSim.ports[currPort].getQ().remove();
-			if (tempShipment == null)   continue;
+			//if (tempShipment == null)   continue;
 			if (tempShipment.getDestinationPort() == dest) {
 				boolean isSuccess = vessel.addShipment(tempShipment);
 				if (!isSuccess) {
@@ -60,7 +75,7 @@ public class VesselEvent implements Event {
 				VesselSim.ports[currPort].getQ().add(tempShipment);
 			}
 		}
-*/
+
 		/* If the vessel reaches its departure capacity,
 		 * the VesselEvent will create a new VesselEvent and schedule it (via the agenda)
 		 * for the arrival at the next stop at a time in the future depending on the distance to that port
