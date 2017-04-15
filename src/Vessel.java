@@ -23,10 +23,6 @@ public class Vessel {
 	/* time when created, wait time = getTotalWaitTime() - creationTime */
 	private int creationTime;
 
-
-
-	/*  */
-
 	/* shipments list */
 	private ArrayList<Shipment> list;
 
@@ -74,6 +70,7 @@ public class Vessel {
 		return (int) (VesselSim.agenda.getCurrentTime() - creationTime);
 	}
 
+    /* loading the vessel with a given Shipment */
 	public boolean addShipment(Shipment s) {
 		if (!isFull()) {
 			list.add(s);
@@ -84,30 +81,14 @@ public class Vessel {
 		}
 	}
 
-	public Shipment[] removePassengersAtPort(int targetPort) {
+	public void removeShipments() {
 
-		/* buffer the shipments whose destination is the targetPort into a temporary list */
-		ArrayList<Shipment> tempList = new ArrayList<Shipment>();
-		for (int i = 0; i < list.size(); i++) {
-			Shipment tempShipment = list.get(i);
-			if (tempShipment.getDestinationPort() == targetPort) {
-				tempList.add(tempShipment);
-			}
-		}
+	    ArrayList<Shipment> tempList = list;
 
 		/* remove the shipments whose destination is the targetPort from the list */
-		for (int i = 0; i < tempList.size(); i++) {
-			Shipment tempShipment = tempList.get(i);
-			list.remove(tempShipment);
-		}
+		list = new ArrayList<Shipment>();
 
-		/* dump the shipments whose destination is the targetPort into an array */
-		Shipment[] result = new Shipment[tempList.size()];
-		for (int i = 0; i < result.length; i++) {
-			result[i] = tempList.get(i);
-		}
-
-		return result;
+		currWeight = 0;
 	}
 
 	public boolean isFull() {
@@ -118,10 +99,21 @@ public class Vessel {
 		return typeName;
 	}
 
-	public int getSize() {
-		return list.size();
-	}
-
 	/* calculate how much money was made off of the current shipment */
+    public int getMoney() {
+        int result = 0;
+        for (int i = 0; i < list.size(); i++) {
+            Shipment tempShipment = list.get(i);
+            result += tempShipment.getWeight();
+        }
+        return result;
+    }
 
+    public ArrayList<Shipment> getList() {
+        return list;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
 }

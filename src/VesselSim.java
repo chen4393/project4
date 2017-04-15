@@ -43,7 +43,32 @@ public class VesselSim {
 		agenda.add(new ShipmentMaker(1), 1);
 		agenda.add(new ShipmentMaker(2), 2);
 
-		while (agenda.getCurrentTime() <= 100) {
+		int numVessel = 0;
+        if (Type.equals("Canoe")) {
+            numVessel = 100;
+        } else if (Type.equals("Yacht")) {
+            numVessel = 10;
+        } else if (Type.equals("Galleon")) {
+            numVessel = 20;
+        } else if (Type.equals("Barge")) {
+            numVessel = 15;
+        } else if (Type.equals("Freighter")) {
+            numVessel = 10;
+        } else if (Type.equals("Airplane")) {
+            numVessel = 5;
+        } else if (Type.equals("Carrier Pigeon Team")) {
+            numVessel = 30;
+        } else if (Type.equals("Rocket")) {
+            numVessel = 10;
+        }
+
+        for (int i = 0; i < numVessel; i++) {
+            int randNum = (int)(9 * Math.random());
+            if (randNum >= 6)   randNum++;
+            agenda.add(new VesselEvent(randNum, new Vessel(Type)), 10);
+        }
+
+		while (agenda.getCurrentTime() <= 100000) {
 			agenda.remove().run();
 		}
 	}
